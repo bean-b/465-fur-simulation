@@ -103,9 +103,6 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
-		initializeText();
-    
-
         
     }
 }
