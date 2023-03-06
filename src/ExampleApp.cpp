@@ -106,10 +106,6 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		initializeText();
     
 
-        //TODO: Initialize the _mesh variable with a triangle mesh uploaded to the GPU.
-		ExampleApp::createTop(_mesh);
-		ExampleApp::createBot(_mesh_bot);
-		ExampleApp::createSide(_mesh_side);
         
     }
 }
@@ -143,37 +139,10 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
     
-    // Draw the mesh
-    _mesh->draw(_shader);
-	_mesh_bot->draw(_shader);
-	_mesh_side->draw(_shader);
+    
 
 }
 
-void ExampleApp::drawText(const std::string text, float xPos, float yPos, GLfloat windowHeight, GLfloat windowWidth) {
-	//float lh = 0;
-	//fonsVertMetrics(fs, NULL, NULL, &lh);
-	//double width = fonsTextBounds(fs, text.c_str(), NULL, NULL) + 40;
-	//double height = lh + 40;
-
-	_textShader.use();
-	_textShader.setUniform("projection_mat", glm::ortho(0.f, windowWidth, windowHeight, 0.f, -1.f, 1.f));
-	_textShader.setUniform("view_mat", glm::mat4(1.0));
-	_textShader.setUniform("model_mat", glm::mat4(1.0));
-	_textShader.setUniform("lambertian_texture", 0);
-
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	fonsDrawText(fs, xPos, yPos, text.c_str(), NULL);
-
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	_shader.use();
-
-}
 
 
 
@@ -183,146 +152,4 @@ void ExampleApp::reloadShaders()
 	_shader.compileShader("texture.frag", GLSLShader::FRAGMENT);
 	_shader.link();
 	_shader.use();
-}
-
-void ExampleApp::initializeText() {
-	int fontNormal = FONS_INVALID;
-	fs = nullptr;
-
-	fs = glfonsCreate(512, 512, FONS_ZERO_TOPLEFT);
-	if (fs == NULL) {
-		assert(false);//Could not create stash
-	}
-
-	fontNormal = fonsAddFont(fs, "sans", "DroidSansMono.ttf");
-	if (fontNormal == FONS_INVALID) {
-		assert(false);// Could not add font normal.
-	}
-
-	unsigned int black = glfonsRGBA(0, 0, 0, 255);
-
-	fonsClearState(fs);
-	fonsSetSize(fs, 20);
-	fonsSetFont(fs, fontNormal);
-	fonsSetColor(fs, black);
-	fonsSetAlign(fs, FONS_ALIGN_LEFT | FONS_ALIGN_TOP);
-
-	_textShader.compileShader("textRendering.vert", GLSLShader::VERTEX);
-	_textShader.compileShader("textRendering.frag", GLSLShader::FRAGMENT);
-	_textShader.link();
-}
-
-void ExampleApp::createTop(std::shared_ptr<basicgraphics::Mesh> &_mesh2) {
-	std::vector<Mesh::Vertex> cpuVertexArray;
-	std::vector<int> cpuIndexArray;
-	std::vector<std::shared_ptr<Texture>> textures;
-
-	Mesh::Vertex vert;
-	vert.position = vec3(0, 1, 0);
-	vert.normal = vec3(0, 0, 1);
-	vert.texCoord0 = glm::vec2(.4, 0.1);
-	cpuVertexArray.push_back(vert);
-	cpuIndexArray.push_back(0);
-
-
-	for (int i = 0; i < 361; i++) {
-		Mesh::Vertex vert;
-		vert.position = vec3(cos(radians((float)i)), 1, sin(radians((float)i)));
-		vert.normal = vec3(0, 0, 1);
-		vert.texCoord0 = glm::vec2(.4, 0.2);
-		cpuVertexArray.push_back(vert);
-		cpuIndexArray.push_back(361 - i + 1);
-	}
-
-	const int numVertices = cpuVertexArray.size();
-	const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
-	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
-
-	std::shared_ptr<Texture> tex =
-		Texture::create2DTextureFromFile("campbells.jpg");
-	textures.push_back(tex);
-
-	_mesh2.reset(new Mesh(textures, GL_TRIANGLE_FAN, GL_STATIC_DRAW,
-		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
-		cpuIndexArray.size(), cpuIndexByteSize, &cpuIndexArray[0]));
-}
-void ExampleApp::createBot(std::shared_ptr<basicgraphics::Mesh> &_mesh2) {
-	std::vector<Mesh::Vertex> cpuVertexArray;
-	std::vector<int> cpuIndexArray;
-	std::vector<std::shared_ptr<Texture>> textures;
-
-	float yPos = -1;
-
-	Mesh::Vertex vert;
-	vert.position = vec3(0, yPos, 0);
-	vert.normal = vec3(0, 0, 1);
-	vert.texCoord0 = glm::vec2(.4, 0);
-	cpuVertexArray.push_back(vert);
-	cpuIndexArray.push_back(0);
-
-
-	for (int i = 361; i >= 0; i--) {
-		Mesh::Vertex vert;
-		vert.position = vec3(cos(radians((float)i)), 1, sin(radians((float)i)));
-		vert.normal = vec3(0, 0, 1);
-		vert.texCoord0 = glm::vec2(.4, 0.5);
-		cpuVertexArray.push_back(vert);
-		cpuIndexArray.push_back(i+1);
-	}
-
-	const int numVertices = cpuVertexArray.size();
-	const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
-	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
-
-	std::shared_ptr<Texture> tex =
-		Texture::create2DTextureFromFile("campbells.jpg");
-	textures.push_back(tex);
-
-	_mesh2.reset(new Mesh(textures, GL_TRIANGLE_FAN, GL_STATIC_DRAW,
-		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
-		cpuIndexArray.size(), cpuIndexByteSize, &cpuIndexArray[0]));
-}
-
-void ExampleApp::createSide(std::shared_ptr<basicgraphics::Mesh> &_mesh2) {
-	std::vector<Mesh::Vertex> cpuVertexArray;
-	std::vector<int> cpuIndexArray;
-	std::vector<std::shared_ptr<Texture>> textures;
-
-	for (int i = 0; i < 361; i++) {
-		if (i % 2 == 1) {
-			Mesh::Vertex vert;
-			vert.position = vec3(cos(radians((float)i)), -1, sin(radians((float)i)));
-			vert.normal = vec3(0, 0, 1);
-			vert.texCoord0 = glm::vec2(-radians((float)i) / (2 * glm::pi<float>())-.25, 1);
-			cpuVertexArray.push_back(vert);
-			cpuIndexArray.push_back(i+1);
-
-		}
-
-		else {
-
-			Mesh::Vertex vert;
-			vert.position = vec3(cos(radians((float)i)), 1, sin(radians((float)i)));
-			vert.normal = vec3(0, 0, 1);
-			vert.texCoord0 = glm::vec2(-radians((float)i)/(2* glm::pi<float>())-.25, 0);
-			cpuVertexArray.push_back(vert);
-			cpuIndexArray.push_back(i+1);
-
-		}
-
-		const int numVertices = cpuVertexArray.size();
-		const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
-		const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
-
-		std::shared_ptr<Texture> tex =
-			Texture::create2DTextureFromFile("campbells.jpg");
-		textures.push_back(tex);
-
-		_mesh2.reset(new Mesh(textures, GL_TRIANGLE_STRIP, GL_STATIC_DRAW,
-			cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
-			cpuIndexArray.size(), cpuIndexByteSize, &cpuIndexArray[0]));
-		
-	}
-
-
 }

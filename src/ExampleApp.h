@@ -58,21 +58,10 @@ private:
 	double _lastTime;
 	double _curFrameTime;
     
-    std::shared_ptr<basicgraphics::Mesh> _mesh;
-    std::shared_ptr<basicgraphics::Mesh> _mesh_bot;
-    std::shared_ptr<basicgraphics::Mesh> _mesh_side;
-    
     virtual void reloadShaders();
     basicgraphics::GLSLProgram _shader;
 
-	void initializeText();
-	void drawText(const std::string text, float xPos, float yPos, GLfloat windowHeight, GLfloat windowWidth);
 	struct FONScontext* fs;
-    basicgraphics::GLSLProgram _textShader;
-
-    virtual void createTop(std::shared_ptr<basicgraphics::Mesh> &_mesh2);
-    virtual void createBot(std::shared_ptr<basicgraphics::Mesh> &_mesh2);
-    virtual void createSide(std::shared_ptr<basicgraphics::Mesh> &_mesh2);
 };
 
 
