@@ -103,7 +103,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
-        
+		setupGeometry(sphere_mesh);
     }
 }
 
@@ -136,7 +136,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
     
-    
+	sphere_mesh->draw(_shader);
 
 }
 
@@ -149,4 +149,82 @@ void ExampleApp::reloadShaders()
 	_shader.compileShader("texture.frag", GLSLShader::FRAGMENT);
 	_shader.link();
 	_shader.use();
+}
+
+
+void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
+
+	const int STACKS = 20;
+	const int SLICES = 40;
+
+	std::vector<Mesh::Vertex> cpuVertexArray;
+	std::vector<int> cpuIndexArray;
+	std::vector<std::shared_ptr<Texture>> textures;
+
+	float radius = 1.0;
+	float pi = glm::pi<float>();
+
+
+	float singleSliceAngle = 2 * pi / SLICES;
+	float singleStackAngle = pi / STACKS;
+	float currSectorAngle, currStackAngle;
+	int count = 0;
+
+	for (int i = 0; i <= STACKS; i++) {
+		currStackAngle = pi / 2 - i * singleStackAngle;
+
+
+		for (int j = 0; j <= SLICES; j++) {
+			currSectorAngle = j * singleSliceAngle;
+			Mesh::Vertex vert;
+			vert.position = getPosition(currStackAngle, currSectorAngle);
+			vert.normal = vert.position / radius;
+			vert.texCoord0 = glm::vec2(-(float)j / (float)SLICES + 0.5, -(float)i / (float)STACKS);
+			cpuVertexArray.push_back(vert);
+		}
+	}
+
+	int k1, k2;
+	for (int i = 0; i < STACKS; i++) {
+		// Coordinates for each corner of a sector in a sphere
+		k1 = i * (SLICES + 1);
+		k2 = k1 + SLICES + 1;
+
+		for (int j = 0; j < SLICES; j++, k1++, k2++) {
+
+			// If not the first sector
+			if (i != 0) {
+				cpuIndexArray.push_back(k1);
+				cpuIndexArray.push_back(k2);
+				cpuIndexArray.push_back(k1 + 1);
+			}
+
+			// If not the last sector
+			if (i != (STACKS)) {
+				cpuIndexArray.push_back(k1 + 1);
+				cpuIndexArray.push_back(k2);
+				cpuIndexArray.push_back(k2 + 1);
+			}
+
+		}
+	}
+
+	const int numVertices = cpuVertexArray.size();
+	const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
+	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
+
+
+	std::shared_ptr<Texture> tex =
+		Texture::create2DTextureFromFile("grey.png");
+	textures.push_back(tex);
+
+	_mesh.reset(new Mesh(textures, GL_TRIANGLE_STRIP, GL_STATIC_DRAW,
+		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
+		cpuIndexArray.size(), cpuIndexByteSize, &cpuIndexArray[0]));
+}
+
+glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
+
+	// Latitude and longitude should already be in radians
+	return vec3(cos(latitude) * cos(longitude), -sin(latitude), cos(latitude) * sin(longitude));
 }

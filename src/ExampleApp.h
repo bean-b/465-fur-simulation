@@ -61,7 +61,16 @@ private:
     virtual void reloadShaders();
     basicgraphics::GLSLProgram _shader;
 
+    std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
+
+
 	struct FONScontext* fs;
+
+    // Calculate and set up the buffers to render to screen
+    void setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh);
+
+    // Given latitude and longitude, calculate 3D position
+    glm::vec3 getPosition(double latitude, double longitude);
 };
 
 
