@@ -44,6 +44,8 @@ set(header_files
 
 set(extra_files
   README.md
+  resources/ColorShader.frag
+  resources/ColorShader.vert
 )
 
 set_source_files_properties(${extra_files} PROPERTIES HEADER_FILE_ONLY TRUE)
