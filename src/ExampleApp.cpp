@@ -227,26 +227,30 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	//an array to hold our pixels
 	std::vector<vec4> colors;
 	for (int i = 0; i < totalPixels; i++) {
-		colors.push_back(vec4(0, 0, 0, 0));
+		colors.push_back(vec4(1, 1, 1, 1));
 	}
 
-	////compute the number of opaque pixels = nr of hair strands
-	int nrStrands = (int)(1.0f * totalPixels);
+	//////compute the number of opaque pixels = nr of hair strands
+	//int nrStrands = (int)(0.5f * totalPixels);
 
-	////fill texture with opaque pixels
-	for (int i = 0; i < nrStrands; i++)
-	{
-		int x, y;
-		//random position on the texture
-		x = rand() % height;
-		y = rand() % width;
-		//put color (which has an alpha value of 255, i.e. opaque)
-		colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
-	}
+	//////fill texture with opaque pixels
+	//for (int i = 0; i < nrStrands; i++)
+	//{
+	//	int x, y;
+	//	//random position on the texture
+	//	x = rand() % height;
+	//	y = rand() % width;
+	//	//put color (which has an alpha value of 255, i.e. opaque)
+	//	colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
+	//}
 
 
 	////set the pixels on the texture.
-	tex->update(&colors, GL_SRGB8, GL_SRGB8);
+
+
+
+	tex->update(&colors, tex->_externalFormat, tex->_dataFormat);
+	//tex->update(&colors, 2036691559, 1735290926);
 	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 
