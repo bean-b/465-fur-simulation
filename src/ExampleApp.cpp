@@ -8,6 +8,7 @@
 #include <config/VRDataIndex.h>
 
 #include <glm/gtx/orthonormalize.hpp>
+#include <stdlib.h>  
 
 using namespace basicgraphics;
 using namespace std;
@@ -138,6 +139,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
     
 	sphere_mesh->draw(_shader);
 
+
+
 }
 
 
@@ -214,9 +217,42 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
 
 
-	std::shared_ptr<Texture> tex =
-		Texture::create2DTextureFromFile("grey.png");
+	std::shared_ptr<Texture> tex = Texture::create2DTextureFromFile("grey.png");
+
+	//read the width and height of the texture
+	int width = tex->getWidth();
+	int height = tex->getHeight();
+	const int totalPixels = width * height;
+
+	//an array to hold our pixels
+	std::vector<vec4> colors;
+	for (int i = 0; i < totalPixels; i++) {
+		colors.push_back(vec4(0, 0, 0, 0));
+	}
+
+	////compute the number of opaque pixels = nr of hair strands
+	int nrStrands = (int)(1.0f * totalPixels);
+
+	////fill texture with opaque pixels
+	for (int i = 0; i < nrStrands; i++)
+	{
+		int x, y;
+		//random position on the texture
+		x = rand() % height;
+		y = rand() % width;
+		//put color (which has an alpha value of 255, i.e. opaque)
+		colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
+	}
+
+
+	////set the pixels on the texture.
+	tex->update(&colors, GL_SRGB8, GL_SRGB8);
+	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
+
+
+	
+
 
 	_mesh.reset(new Mesh(textures, GL_TRIANGLE_STRIP, GL_STATIC_DRAW,
 		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
@@ -228,3 +264,38 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 	// Latitude and longitude should already be in radians
 	return vec3(cos(latitude) * cos(longitude), -sin(latitude), cos(latitude) * sin(longitude));
 }
+
+
+
+//basicgraphics::Texture ExampleApp::FillFurTexture(basicgraphics::Texture furTexture, float density)
+//{
+//
+//	//read the width and height of the texture
+//	int width = furTexture.getWidth();
+//	int height = furTexture.getHeight();
+//	const int totalPixels = width * height;
+//
+//	//an array to hold our pixels
+//	std::vector<vec4> colors;
+//	for (int i=0; i < totalPixels; i++) {
+//		colors.push_back(vec4(0,0,0,0));
+//	}
+//
+//	////compute the number of opaque pixels = nr of hair strands
+//	int nrStrands = (int)(density * totalPixels);
+//
+//	////fill texture with opaque pixels
+//	for (int i = 0; i < nrStrands; i++)
+//	{
+//		int x, y;
+//		//random position on the texture
+//		x = rand() % height;
+//		y = rand() % width;
+//		//put color (which has an alpha value of 255, i.e. opaque)
+//		colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
+//	}
+//
+//	////set the pixels on the texture.
+//	furTexture.update(&colors, GL_SRGB8_ALPHA8, GL_SRGB8_ALPHA8);
+//	return furTexture;
+//}

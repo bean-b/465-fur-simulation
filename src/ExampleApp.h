@@ -71,6 +71,8 @@ private:
 
     // Given latitude and longitude, calculate 3D position
     glm::vec3 getPosition(double latitude, double longitude);
+
+    //basicgraphics::Texture FillFurTexture(basicgraphics::Texture furTexture, float density);
 };
 
 
