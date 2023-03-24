@@ -216,8 +216,8 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
 	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
 
-
-	std::shared_ptr<Texture> tex = Texture::create2DTextureFromFile("grey.png");
+	//update me
+	std::shared_ptr<Texture> tex = Texture::createFromMemory("grey.png");
 
 	//read the width and height of the texture
 	int width = tex->getWidth();
@@ -225,6 +225,8 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	const int totalPixels = width * height;
 
 	//an array to hold our pixels
+
+	//TODOmake this an array of bytes
 	std::vector<vec4> colors;
 	for (int i = 0; i < totalPixels; i++) {
 		colors.push_back(vec4(1, 1, 1, 1));
@@ -247,7 +249,11 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	////set the pixels on the texture.
 
-
+	
+	//coulumn major order
+	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", &colors, GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB8, 256, 256, 1);
+	//
+	//
 
 	tex->update(&colors, tex->_externalFormat, tex->_dataFormat);
 	//tex->update(&colors, 2036691559, 1735290926);
