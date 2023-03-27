@@ -216,29 +216,42 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
 	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
 
-	//update me
-	std::shared_ptr<Texture> tex = Texture::createFromMemory("grey.png");
-
-	//read the width and height of the texture
-	int width = tex->getWidth();
-	int height = tex->getHeight();
-	const int totalPixels = width * height;
-
 	//an array to hold our pixels
 
+	int width = 256;
+	int height = 256;
+	int totalPixels = width * height;
 	//TODOmake this an array of bytes
-	std::vector<vec4> colors;
-	for (int i = 0; i < totalPixels; i++) {
-		colors.push_back(vec4(1, 1, 1, 1));
+	unsigned char colors[262144];
+	unsigned char n = 128;
+	for (int i = 0; i < 262144; i++) {
+		//aplha chanel
+		if ((i+1) % 4 == 0) {
+			colors[i] = 255;
+		}else if ((i + 1) % 4 == 1) {
+			//red chanel
+			colors[i] = 255;
+		}
+		else if((i + 1) %4 == 2){
+			//green chanel
+			colors[i] = 0;
+		}
+		else {
+			//blue chanel
+			colors[i] = 0;
+		}
+
+		
+
 	}
 
-	//////compute the number of opaque pixels = nr of hair strands
-	//int nrStrands = (int)(0.5f * totalPixels);
+	////compute the number of opaque pixels = nr of hair strands
+	int nrStrands = (int)(0.5f * totalPixels);
 
-	//////fill texture with opaque pixels
+	////fill texture with opaque pixels
 	//for (int i = 0; i < nrStrands; i++)
 	//{
-	//	int x, y;
+	//	int x, y;s
 	//	//random position on the texture
 	//	x = rand() % height;
 	//	y = rand() % width;
@@ -251,12 +264,9 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	
 	//coulumn major order
-	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", &colors, GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB8, 256, 256, 1);
+	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	//
 	//
-
-	tex->update(&colors, tex->_externalFormat, tex->_dataFormat);
-	//tex->update(&colors, 2036691559, 1735290926);
 	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 
