@@ -223,26 +223,9 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	int totalPixels = width * height;
 	//TODOmake this an array of bytes
 	unsigned char colors[262144];
-	unsigned char n = 128;
-	for (int i = 0; i < 262144; i++) {
-		//aplha chanel
-		if ((i+1) % 4 == 0) {
-			colors[i] = 255;
-		}else if ((i + 1) % 4 == 1) {
-			//red chanel
-			colors[i] = 255;
-		}
-		else if((i + 1) %4 == 2){
-			//green chanel
-			colors[i] = 0;
-		}
-		else {
-			//blue chanel
-			colors[i] = 0;
-		}
 
-		
-
+	for (int i = 0; i < 262144; i+=4) {
+		fillByteInByteArray(colors, i, 255, 155, 0, 255);
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
@@ -251,11 +234,11 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	////fill texture with opaque pixels
 	//for (int i = 0; i < nrStrands; i++)
 	//{
-	//	int x, y;s
-	//	//random position on the texture
+	//	int x, y;
+	//	random position on the texture
 	//	x = rand() % height;
 	//	y = rand() % width;
-	//	//put color (which has an alpha value of 255, i.e. opaque)
+	//	put color (which has an alpha value of 255, i.e. opaque)
 	//	colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
 	//}
 
@@ -283,6 +266,15 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 
 	// Latitude and longitude should already be in radians
 	return vec3(cos(latitude) * cos(longitude), -sin(latitude), cos(latitude) * sin(longitude));
+}
+
+void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+	unsigned char mod = 1;
+	
+	*(bytes + mod * index) = r;
+	*(bytes + mod + mod*index) = g;
+	*(bytes + 2*mod + mod*index) = b;
+	*(bytes + 3*mod + mod*index) = a;
 }
 
 
