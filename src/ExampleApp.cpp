@@ -225,22 +225,22 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	unsigned char colors[262144];
 
 	for (int i = 0; i < 262144; i+=4) {
-		fillByteInByteArray(colors, i, 255, 155, 0, 255);
+		fillByteInByteArray(colors, i, 60, 60, 60, 255);
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
 	int nrStrands = (int)(0.5f * totalPixels);
 
 	////fill texture with opaque pixels
-	//for (int i = 0; i < nrStrands; i++)
-	//{
-	//	int x, y;
-	//	random position on the texture
-	//	x = rand() % height;
-	//	y = rand() % width;
-	//	put color (which has an alpha value of 255, i.e. opaque)
-	//	colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
-	//}
+	for (int i = 0; i < nrStrands; i++)
+	{
+		int x, y;
+
+		x = rand() % height;
+		y = rand() % width;
+
+		fillByteInByteArray(colors, (x * width + y)*4, 218, 165, 32, 255);
+	}
 
 
 	////set the pixels on the texture.
