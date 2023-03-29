@@ -140,8 +140,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("eye_world", eye_world);
     
 	sphere_mesh->draw(_shader);
-
-	int asd = 1311332183;
+	//to update shader
+	int asd = 13113332183;
 
 }
 
