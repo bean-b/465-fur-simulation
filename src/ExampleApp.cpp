@@ -250,6 +250,11 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	//
 	//
+
+
+	// Added Jonas' texture path
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+
 	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 
