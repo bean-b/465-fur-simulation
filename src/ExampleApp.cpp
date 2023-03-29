@@ -26,6 +26,7 @@ ExampleApp::~ExampleApp()
 	shutdown();
 }
 
+
 void ExampleApp::onAnalogChange(const VRAnalogEvent &event) {
     // This routine is called for all Analog_Change events.  Check event->getName()
     // to see exactly which analog input has been changed, and then access the
@@ -134,12 +135,13 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("projection_mat", projection);
 	
 	_shader.setUniform("model_mat", model);
+	_shader.setUniform("maxHairLength", 0.5f);
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
     
 	sphere_mesh->draw(_shader);
 
-
+	
 
 }
 
@@ -148,8 +150,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 
 void ExampleApp::reloadShaders()
 {
-	_shader.compileShader("texture.vert", GLSLShader::VERTEX);
-	_shader.compileShader("texture.frag", GLSLShader::FRAGMENT);
+	_shader.compileShader("colorShader.vert", GLSLShader::VERTEX);
+	_shader.compileShader("colorShader.frag", GLSLShader::FRAGMENT);
 	_shader.link();
 	_shader.use();
 }
@@ -250,11 +252,6 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	//
 	//
-
-
-	// Added Jonas' texture path
-	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
-
 	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 

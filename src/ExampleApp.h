@@ -71,6 +71,7 @@ private:
 
     // Given latitude and longitude, calculate 3D position
     glm::vec3 getPosition(double latitude, double longitude);
+    
 
     void fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
