@@ -133,15 +133,15 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	
 	_shader.setUniform("view_mat", view);
 	_shader.setUniform("projection_mat", projection);
-	
 	_shader.setUniform("model_mat", model);
+
 	_shader.setUniform("maxHairLength", 0.5f);
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
     
 	sphere_mesh->draw(_shader);
 
-	
+	int asd = 1311332183;
 
 }
 
@@ -150,8 +150,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 
 void ExampleApp::reloadShaders()
 {
-	_shader.compileShader("colorShader.vert", GLSLShader::VERTEX);
-	_shader.compileShader("colorShader.frag", GLSLShader::FRAGMENT);
+	_shader.compileShader("ColorShader.vert", GLSLShader::VERTEX);
+	_shader.compileShader("ColorShader.frag", GLSLShader::FRAGMENT);
 	_shader.link();
 	_shader.use();
 }
@@ -223,7 +223,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	int width = 256;
 	int height = 256;
 	int totalPixels = width * height;
-	//TODOmake this an array of bytes
+
 	unsigned char colors[262144];
 
 	for (int i = 0; i < 262144; i+=4) {
@@ -250,14 +250,12 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
-	//
-	//
+	// Added Jonas' texture path
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
-
-
-	
-
+	tex->bind(1);
+	_shader.setUniform("furTex", 1);
 
 	_mesh.reset(new Mesh(textures, GL_TRIANGLE_STRIP, GL_STATIC_DRAW,
 		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
@@ -278,38 +276,3 @@ void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned c
 	*(bytes + 2*mod + mod*index) = b;
 	*(bytes + 3*mod + mod*index) = a;
 }
-
-
-
-//basicgraphics::Texture ExampleApp::FillFurTexture(basicgraphics::Texture furTexture, float density)
-//{
-//
-//	//read the width and height of the texture
-//	int width = furTexture.getWidth();
-//	int height = furTexture.getHeight();
-//	const int totalPixels = width * height;
-//
-//	//an array to hold our pixels
-//	std::vector<vec4> colors;
-//	for (int i=0; i < totalPixels; i++) {
-//		colors.push_back(vec4(0,0,0,0));
-//	}
-//
-//	////compute the number of opaque pixels = nr of hair strands
-//	int nrStrands = (int)(density * totalPixels);
-//
-//	////fill texture with opaque pixels
-//	for (int i = 0; i < nrStrands; i++)
-//	{
-//		int x, y;
-//		//random position on the texture
-//		x = rand() % height;
-//		y = rand() % width;
-//		//put color (which has an alpha value of 255, i.e. opaque)
-//		colors[x * width + y] = vec4(0.75f, 0.75f, 0, 1);
-//	}
-//
-//	////set the pixels on the texture.
-//	furTexture.update(&colors, GL_SRGB8_ALPHA8, GL_SRGB8_ALPHA8);
-//	return furTexture;
-//}
