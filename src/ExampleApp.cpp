@@ -18,6 +18,8 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 {
 	_lastTime = 0.0;
     _curFrameTime = 0.0;
+	rotation = mat4(1.0);
+	mouseDown = false;
 }
 
 ExampleApp::~ExampleApp()
@@ -45,6 +47,11 @@ void ExampleApp::onButtonDown(const VRButtonEvent &event) {
     // to see exactly which button has been pressed down.
 	
 	//std::cout << "ButtonDown: " << event.getName() << std::endl;
+	string name = event.getName();
+
+	 if (name == "MouseBtnLeft_Down") {
+		 mouseDown = true;
+	}
 }
 
 void ExampleApp::onButtonUp(const VRButtonEvent &event) {
@@ -52,6 +59,10 @@ void ExampleApp::onButtonUp(const VRButtonEvent &event) {
     // to see exactly which button has been released.
 
 	//std::cout << "ButtonUp: " << event.getName() << std::endl;
+
+	if (event.getName() == "MouseBtnLeft_Up") {
+		mouseDown = false;
+	}
 }
 
 void ExampleApp::onCursorMove(const VRCursorEvent &event) {
@@ -59,6 +70,22 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 	// or the relative position within the window scaled 0--1.
 	
 	//std::cout << "MouseMove: "<< event.getName() << " " << event.getPos()[0] << " " << event.getPos()[1] << std::endl;
+
+	if (mouseDown) {
+		vec2 dxy = vec2(event.getPos()[0], event.getPos()[1]) - lastMousePos;
+		// TODO: Update the "rotation" matrix based on how the user has dragged the mouse
+		// Note: the mouse movement since the last frame is stored in dxy.
+
+
+		mat4 rotationX = toMat4(angleAxis(radians(dxy.x), vec3(0, 1, 1)));
+		mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 1)));
+
+		rotation = rotationX * rotationY * rotation;
+
+
+
+	}
+	lastMousePos = vec2(event.getPos()[0], event.getPos()[1]);
 }
 
 void ExampleApp::onTrackerMove(const VRTrackerEvent &event) {
@@ -126,7 +153,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.01f, 100.0f);
 	
 	// Setup the model matrix
-	glm::mat4 model = glm::mat4(1.0);
+	glm::mat4 model = rotation;
     
 	// Tell opengl we want to use this specific shader.
 	_shader.use();
@@ -152,6 +179,10 @@ void ExampleApp::reloadShaders()
 {
 	_shader.compileShader("ColorShader.vert", GLSLShader::VERTEX);
 	_shader.compileShader("ColorShader.frag", GLSLShader::FRAGMENT);
+
+	// Shaders that work
+	//_shader.compileShader("texture.vert", GLSLShader::VERTEX);
+	//_shader.compileShader("texture.frag", GLSLShader::FRAGMENT);
 	_shader.link();
 	_shader.use();
 }
@@ -251,13 +282,13 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
-	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
-	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
 
-	_mesh.reset(new Mesh(textures, GL_TRIANGLE_STRIP, GL_STATIC_DRAW,
+	_mesh.reset(new Mesh(textures, GL_TRIANGLES, GL_STATIC_DRAW,
 		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
 		cpuIndexArray.size(), cpuIndexByteSize, &cpuIndexArray[0]));
 }

@@ -57,11 +57,16 @@ private:
 
 	double _lastTime;
 	double _curFrameTime;
+
+    bool mouseDown; // Signifies whether the left mouse button is currently held down.
+    glm::vec2 lastMousePos;
     
     virtual void reloadShaders();
     basicgraphics::GLSLProgram _shader;
 
     std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
+
+    glm::mat4 rotation;
 
 
 	struct FONScontext* fs;
