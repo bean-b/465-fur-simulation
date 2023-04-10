@@ -168,7 +168,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
     
 	sphere_mesh->draw(_shader);
 	//to update shader
-	int asd = 13113332183;
+	int asd = 122;
 
 }
 
@@ -278,12 +278,13 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	////set the pixels on the texture.
 
+	int basd = 123;
 	
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
-	tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
-	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);

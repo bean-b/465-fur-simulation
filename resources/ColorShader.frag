@@ -6,9 +6,11 @@ out vec4 fragColor;
 uniform sampler2D furTex;
 
 
-in vec2 texCoord;
+in vec2 texture_coordinates;
 void main() 
 {
     
-    fragColor = texture(furTex, texCoord);
+    fragColor = texture(furTex, texture_coordinates);
+    fragColor.a = 1.0f;
+
 }
