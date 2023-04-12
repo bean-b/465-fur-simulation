@@ -11,6 +11,5 @@ void main()
 {
     
     fragColor = texture(furTex, texture_coordinates);
-    fragColor.a = 1.0f;
 
 }

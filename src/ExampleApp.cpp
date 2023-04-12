@@ -14,12 +14,17 @@ using namespace basicgraphics;
 using namespace std;
 using namespace glm;
 
+
+
+
+
 ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 {
 	_lastTime = 0.0;
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 	mouseDown = false;
+	maxHairLength = 20.0f;
 }
 
 ExampleApp::~ExampleApp()
@@ -85,6 +90,8 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 
 
 	}
+
+
 	lastMousePos = vec2(event.getPos()[0], event.getPos()[1]);
 }
 
@@ -118,6 +125,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 
 
         glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
         glClearDepth(1.0f);
         glDepthFunc(GL_LEQUAL);
 
@@ -144,7 +152,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Setup the view matrix to set where the camera is located in the scene
-    glm::vec3 eye_world = glm::vec3(0, 1.5, 6);
+    glm::vec3 eye_world = glm::vec3(0, 1.5, 2);
     glm::mat4 view = glm::lookAt(eye_world, glm::vec3(0,0,0), glm::vec3(0,1,0));
 
 	// Setup the projection matrix so that things are rendered in perspective
@@ -162,14 +170,18 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("projection_mat", projection);
 	_shader.setUniform("model_mat", model);
 
+	_shader.setUniform("maxHairLength", 2);
+
 	_shader.setUniform("maxHairLength", 0.5f);
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
     
-	sphere_mesh->draw(_shader);
+	
 	//to update2 shader
 	int asd = 1;
 
+
+	furLengthLoop();
 }
 
 
@@ -258,7 +270,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	unsigned char colors[262144];
 
 	for (int i = 0; i < 262144; i+=4) {
-		fillByteInByteArray(colors, i, 60, 60, 60, 255);
+		fillByteInByteArray(colors, i, 60, 60, 60, 0);
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
@@ -278,15 +290,17 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	////set the pixels on the texture.
 
-	int basd = 123;
+	int basd = 2;
 	
+
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
 	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	// Aurum's tex path
-	tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
-	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//beans tex path
+	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -300,6 +314,15 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 
 	// Latitude and longitude should already be in radians
 	return vec3(cos(latitude) * cos(longitude), -sin(latitude), cos(latitude) * sin(longitude));
+}
+
+void ExampleApp::furLengthLoop() {
+	int nrLayers = 30;
+	for (int i = 0; i < nrLayers; i++) {
+		_shader.setUniform("currentLayer", (float)i/nrLayers);
+		sphere_mesh->draw(_shader);
+
+	}
 }
 
 void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {

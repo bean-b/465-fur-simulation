@@ -16,18 +16,16 @@ out vec3 interpSurfNormal;
 
 uniform sampler2D furTex;
 
-float CurrentLayer; //value between 0 and 1
-float MaxHairLength; //maximum hair length
+uniform float CurrentLayer; //value between 0 and 1
+uniform float MaxHairLength; //maximum hair length
 
 void main(void)
 {
 
-	float CurrentLayer = 0.1;
-	float MaxHairLength = 2;
 
-
-	interpSurfPosition = model_mat * vec4(vertex_position, 1.0);
+	
 	interpSurfNormal = mat3(transpose(inverse(model_mat)))*vertex_normal;
+	interpSurfPosition = model_mat * vec4(vertex_position, 1.0) + vec4(interpSurfNormal * MaxHairLength *CurrentLayer,1);
 	texture_coordinates = vertex_texcoord;
 	gl_Position = projection_mat * view_mat * interpSurfPosition;
 

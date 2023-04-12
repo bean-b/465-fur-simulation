@@ -58,6 +58,8 @@ private:
 	double _lastTime;
 	double _curFrameTime;
 
+    float maxHairLength;
+
     bool mouseDown; // Signifies whether the left mouse button is currently held down.
     glm::vec2 lastMousePos;
     
@@ -77,6 +79,7 @@ private:
     // Given latitude and longitude, calculate 3D position
     glm::vec3 getPosition(double latitude, double longitude);
     
+    void furLengthLoop();
 
     void fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
