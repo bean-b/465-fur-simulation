@@ -57,6 +57,7 @@ void ExampleApp::onButtonDown(const VRButtonEvent &event) {
 	 if (name == "MouseBtnLeft_Down") {
 		 mouseDown = true;
 	}
+
 }
 
 void ExampleApp::onButtonUp(const VRButtonEvent &event) {
@@ -85,7 +86,7 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 		mat4 rotationX = toMat4(angleAxis(radians(dxy.x), vec3(0, 1, 0)));
 		mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 0)));
 
-		rotation = rotationX * rotationY * rotation;
+		rotation =	rotationX * rotationY * rotation;
 	}
 
 
@@ -270,7 +271,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
-	int nrStrands = (int)(0.5f * totalPixels);
+	int nrStrands = (int)(0.25f * totalPixels);
 
 	////fill texture with opaque pixels
 	for (int i = 0; i < nrStrands; i++)
@@ -286,7 +287,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	////set the pixels on the texture.
 
-	int basd = 2;
+	int basd = 22;
 	
 
 	//coulumn major order
@@ -315,9 +316,10 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 void ExampleApp::furLengthLoop() {
 	int nrLayers = 30;
 	for (int i = 0; i < nrLayers; i++) {
-		_shader.setUniform("currentLayer", (float)i/nrLayers);
-		sphere_mesh->draw(_shader);
 
+		std::cout << ((float)i) / ((float)nrLayers) << std::endl;
+		_shader.setUniform("CurrentLayer", ((float)i)/((float)nrLayers));
+		sphere_mesh->draw(_shader);
 	}
 }
 
