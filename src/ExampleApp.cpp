@@ -24,7 +24,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 	mouseDown = false;
-	maxHairLength = 20.0f;
+	maxHairLength = 200.0f;
 }
 
 ExampleApp::~ExampleApp()
@@ -86,9 +86,6 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 		mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 0)));
 
 		rotation = rotationX * rotationY * rotation;
-
-
-
 	}
 
 
@@ -170,9 +167,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("projection_mat", projection);
 	_shader.setUniform("model_mat", model);
 
-	_shader.setUniform("maxHairLength", 2);
+	_shader.setUniform("maxHairLength", maxHairLength);
 
-	_shader.setUniform("maxHairLength", 0.5f);
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
     
