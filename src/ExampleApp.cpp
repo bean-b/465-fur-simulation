@@ -77,8 +77,8 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 		// Note: the mouse movement since the last frame is stored in dxy.
 
 
-		mat4 rotationX = toMat4(angleAxis(radians(dxy.x), vec3(0, 1, 1)));
-		mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 1)));
+		mat4 rotationX = toMat4(angleAxis(radians(dxy.x), vec3(0, 1, 0)));
+		mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 0)));
 
 		rotation = rotationX * rotationY * rotation;
 
@@ -284,7 +284,9 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
 	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
-	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	// Aurum's tex path
+	tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
