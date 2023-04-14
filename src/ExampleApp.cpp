@@ -25,7 +25,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	rotation = mat4(1.0);
 	mouseDown = false;
 	maxHairLength = 0.5f;
-	furCoverage = 0.4f;
+	furCoverage = 0.3f;
 }
 
 ExampleApp::~ExampleApp()
@@ -283,7 +283,15 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 		x = rand() % height;
 		y = rand() % width;
 
-		fillByteInByteArray(colors, (x * width + y)*4, 218, 165, 32, 255);
+		if (checkNeighbors(colors, x, y, width)) {
+			fillByteInByteArray(colors, (x * width + y) * 4, 218, 165, 32, 255);
+		}
+
+		/*else {
+			cout << checkNeighbors(colors, x, y, width) << endl;
+		}*/
+
+		
 	}
 
 
@@ -295,11 +303,11 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
-	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
-	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -333,4 +341,22 @@ void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned c
 	*(bytes + mod + mod*index) = g;
 	*(bytes + 2*mod + mod*index) = b;
 	*(bytes + 3*mod + mod*index) = a;
+}
+
+bool ExampleApp::checkNeighbors(unsigned char* bytes, int x, int y, int width) {
+	unsigned char mod = 1;
+		if (   *(bytes + 3 * mod + ((x - 1) * width + (y - 1)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x)*width + (y - 1)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x + 1) * width + (y-1)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x-1)*width + (y)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x+1)*width + (y)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x - 1) * width + (y + 1)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x)*width + (y + 1)) * 4 * mod) == (unsigned char) 255
+			|| *(bytes + 3 * mod + ((x + 1) * width + (y + 1)) * 4 * mod) == (unsigned char) 255) {
+
+			return false;
+		}
+
+	return true; 
+
 }

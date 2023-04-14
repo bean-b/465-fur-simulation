@@ -86,6 +86,7 @@ private:
     void furLengthLoop();
 
 
+    bool checkNeighbors(unsigned char* bytes, int x, int y, int width);
     //basicgraphics::Texture FillFurTexture(basicgraphics::Texture furTexture, float density);
 };
 
