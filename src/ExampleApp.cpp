@@ -24,7 +24,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 	mouseDown = false;
-	maxHairLength = 200.0f;
+	maxHairLength = 1.0f;
 }
 
 ExampleApp::~ExampleApp()
@@ -168,7 +168,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("projection_mat", projection);
 	_shader.setUniform("model_mat", model);
 
-	_shader.setUniform("maxHairLength", maxHairLength);
+	_shader.setUniform("MaxHairLength", maxHairLength);
 
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	_shader.setUniform("eye_world", eye_world);
@@ -293,11 +293,11 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
-	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
-	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -315,12 +315,16 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 
 void ExampleApp::furLengthLoop() {
 	int nrLayers = 30;
-	for (int i = 0; i < nrLayers; i++) {
-
-		std::cout << ((float)i) / ((float)nrLayers) << std::endl;
-		_shader.setUniform("CurrentLayer", ((float)i)/((float)nrLayers));
+	//for (int i = 0; i < nrLayers; i++) {
+	
+	
+		_shader.setUniform("CurrentLayer", 0.6f);
 		sphere_mesh->draw(_shader);
-	}
+		_shader.setUniform("CurrentLayer", 0.0f);
+		_shader.setUniform("CurrentLayer2", 0.5f);
+		sphere_mesh->draw(_shader);
+		
+	//}
 }
 
 void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
