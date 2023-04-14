@@ -314,17 +314,14 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 }
 
 void ExampleApp::furLengthLoop() {
-	int nrLayers = 30;
-	//for (int i = 0; i < nrLayers; i++) {
+	int nrLayers = 100;
+	for (int i = 0; i < nrLayers; i++) {
 	
-	
-		_shader.setUniform("CurrentLayer", 0.6f);
+		_shader.setUniform("CurrentLayer", ((float)i) / ((float)nrLayers));
 		sphere_mesh->draw(_shader);
-		_shader.setUniform("CurrentLayer", 0.0f);
-		_shader.setUniform("CurrentLayer2", 0.5f);
-		sphere_mesh->draw(_shader);
+
 		
-	//}
+	}
 }
 
 void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {

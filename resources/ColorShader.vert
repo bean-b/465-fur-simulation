@@ -28,13 +28,13 @@ void main(void)
 
 	
 	interpSurfNormal = mat3(transpose(inverse(model_mat)))*vertex_normal;
-	if(CurrentLayer > 0.5f){
+	//if(CurrentLayer > 0.5f){
 		interpSurfPosition = model_mat * vec4(vertex_position, 1.0) + vec4(normalize(interpSurfNormal) * MaxHairLength *CurrentLayer, 1);
-	}
+	//}
 
-	else{
-		interpSurfPosition = model_mat * vec4(vertex_position, 1.0) + vec4(normalize(interpSurfNormal) * MaxHairLength *CurrentLayer2, 1);
-	}
+	//else{
+		//interpSurfPosition = model_mat * vec4(vertex_position, 1.0) + vec4(normalize(interpSurfNormal) * MaxHairLength *CurrentLayer2, 1);
+	//}
 
 	
 	texture_coordinates = vertex_texcoord;
