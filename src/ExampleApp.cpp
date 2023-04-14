@@ -25,6 +25,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	rotation = mat4(1.0);
 	mouseDown = false;
 	maxHairLength = 0.5f;
+	furCoverage = 0.4f;
 }
 
 ExampleApp::~ExampleApp()
@@ -271,7 +272,8 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
-	int nrStrands = (int)(0.25f * totalPixels);
+	int nrStrands = (int)(furCoverage * totalPixels);
+
 
 	////fill texture with opaque pixels
 	for (int i = 0; i < nrStrands; i++)

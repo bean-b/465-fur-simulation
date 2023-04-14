@@ -58,6 +58,8 @@ private:
 	double _lastTime;
 	double _curFrameTime;
 
+    
+    float furCoverage;
     float maxHairLength;
 
     bool mouseDown; // Signifies whether the left mouse button is currently held down.
