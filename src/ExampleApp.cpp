@@ -24,7 +24,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 	mouseDown = false;
-	maxHairLength = 1.0f;
+	maxHairLength = 0.5f;
 }
 
 ExampleApp::~ExampleApp()
@@ -150,7 +150,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Setup the view matrix to set where the camera is located in the scene
-    glm::vec3 eye_world = glm::vec3(0, 1.5, 2);
+    glm::vec3 eye_world = glm::vec3(0, 1.5, 1.5+maxHairLength);
     glm::mat4 view = glm::lookAt(eye_world, glm::vec3(0,0,0), glm::vec3(0,1,0));
 
 	// Setup the projection matrix so that things are rendered in perspective
@@ -260,13 +260,13 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	//an array to hold our pixels
 
-	int width = 256;
-	int height = 256;
+	int width = 500;
+	int height = 500;
 	int totalPixels = width * height;
 
-	unsigned char colors[262144];
+	unsigned char colors[1000000];
 
-	for (int i = 0; i < 262144; i+=4) {
+	for (int i = 0; i < 1000000; i+=4) {
 		fillByteInByteArray(colors, i, 60, 60, 60, 0);
 	}
 
@@ -293,11 +293,11 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
-	tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
-	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -314,7 +314,7 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 }
 
 void ExampleApp::furLengthLoop() {
-	int nrLayers = 100;
+	int nrLayers = 400;
 	for (int i = 0; i < nrLayers; i++) {
 	
 		_shader.setUniform("CurrentLayer", ((float)i) / ((float)nrLayers));
