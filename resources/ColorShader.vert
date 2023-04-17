@@ -17,7 +17,6 @@ out vec3 interpSurfNormal;
 uniform sampler2D furTex;
 
 uniform float CurrentLayer; //value between 0 and 1
-uniform float CurrentLayer2;
 uniform float MaxHairLength; //maximum hair length
 
 

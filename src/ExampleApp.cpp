@@ -268,7 +268,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	unsigned char colors[1000000];
 
 	for (int i = 0; i < 1000000; i+=4) {
-		fillByteInByteArray(colors, i, 60, 60, 60, 0);
+		fillByteInByteArray(colors, i, 0, 0, 0, 0);
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
@@ -284,12 +284,9 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 		y = rand() % width;
 
 		if (checkNeighbors(colors, x, y, width)) {
-			fillByteInByteArray(colors, (x * width + y) * 4, 218, 165, 32, 255);
+			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, 255);
 		}
 
-		/*else {
-			cout << checkNeighbors(colors, x, y, width) << endl;
-		}*/
 
 		
 	}
