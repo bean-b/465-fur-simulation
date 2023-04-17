@@ -15,11 +15,11 @@ void main()
     fragColor = texture(furTex, texture_coordinates);
 
     if(CurrentLayer == 0){
-        fragColor.rgb = vec3(166.0/255.0, 75.0/255.0,  42.0/255.0);
+        fragColor.rgb = vec3(0.124, 0.104,  0.07);
         fragColor.a = 1.0;
     };
 
-    float shadow = mix(0.4,1,CurrentLayer);
+    float shadow = mix(0.6, 1, CurrentLayer);
     fragColor *= shadow;
 
 }

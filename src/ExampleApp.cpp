@@ -25,7 +25,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	rotation = mat4(1.0);
 	mouseDown = false;
 	maxHairLength = 0.5f;
-	furCoverage = 0.3f;
+	furCoverage = 0.6f;
 }
 
 ExampleApp::~ExampleApp()
@@ -225,7 +225,20 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 			Mesh::Vertex vert;
 			vert.position = getPosition(currStackAngle, currSectorAngle);
 			vert.normal = vert.position / radius;
-			vert.texCoord0 = glm::vec2(-(float)j / (float)SLICES + 0.5, -(float)i / (float)STACKS);
+
+
+			//https://math.stackexchange.com/questions/1006177/compensating-for-distortion-when-projecting-a-2d-texture-onto-a-sphere
+
+			double lat = abs(asin(vert.position.z));
+			double dist = 1 - lat / pi * 2;
+			double xProj = cos(lat);
+			float ratio = (xProj == 0) ? 1 : (float)(dist / xProj);
+			float u  = (vert.position.x * ratio + 1) / 2;
+			float v = (vert.position.y * ratio + 1) / 2;
+
+			vert.texCoord0 = glm::vec2(u,v);
+
+			//vert.texCoord0 = glm::vec2(-(float)j / (float)SLICES + 0.5, -(float)i / (float)STACKS);
 			cpuVertexArray.push_back(vert);
 		}
 	}
@@ -283,6 +296,8 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 		x = rand() % height;
 		y = rand() % width;
 
+
+
 		if (checkNeighbors(colors, x, y, width)) {
 			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, 255);
 		}
@@ -294,13 +309,12 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	////set the pixels on the texture.
 
-	int basd = 22;
-	
+	int basd = 123;
 
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 	// Added Jonas' texture path
-	tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
@@ -332,12 +346,11 @@ void ExampleApp::furLengthLoop() {
 }
 
 void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-	unsigned char mod = 1;
 	
-	*(bytes + mod * index) = r;
-	*(bytes + mod + mod*index) = g;
-	*(bytes + 2*mod + mod*index) = b;
-	*(bytes + 3*mod + mod*index) = a;
+	*(bytes + index) = r;
+	*(bytes + 1 + index) = g;
+	*(bytes + 2 + index) = b;
+	*(bytes + 3 + index) = a;
 }
 
 bool ExampleApp::checkNeighbors(unsigned char* bytes, int x, int y, int width) {
