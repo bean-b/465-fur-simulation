@@ -279,13 +279,19 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	int totalPixels = width * height;
 
 	unsigned char colors[1000000];
+	//unsigned char furHeight[10000];
 
 	for (int i = 0; i < 1000000; i+=4) {
 		fillByteInByteArray(colors, i, 0, 0, 0, 0);
+		//fillByteInByteArray(furHeight, i, 0, 0, 0, 0);
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
 	int nrStrands = (int)(furCoverage * totalPixels);
+
+	int nrOfLayers = 400;
+
+	int strandsPerLayer = nrStrands / nrOfLayers;
 
 
 	////fill texture with opaque pixels
@@ -296,10 +302,14 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 		x = rand() % height;
 		y = rand() % width;
 
-
+		//compute max layer
+		int max_layer = i / strandsPerLayer;
+		//normalize into [0..1] range
+		float max_layer_n = (float)max_layer / (float)nrOfLayers;
 
 		if (checkNeighbors(colors, x, y, width)) {
-			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, 255);
+			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, (max_layer_n * 255));
+			
 		}
 
 
@@ -309,7 +319,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	////set the pixels on the texture.
 
-	int basd = 123;
+	int basd = 1223;
 
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
