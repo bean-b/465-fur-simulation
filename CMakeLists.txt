@@ -36,10 +36,12 @@ message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
 set(source_files
   src/main.cpp
   src/ExampleApp.cpp
+  src/TurntableManipulator.cpp
 )
 
 set(header_files
   src/ExampleApp.h
+  src/TurntableManipulator.h
 )
 
 set(extra_files

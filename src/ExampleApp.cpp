@@ -20,6 +20,9 @@ using namespace glm;
 
 ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 {
+	_turntable.reset(new TurntableManipulator(3, 0.3, 0.5));
+	_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
+
 	_lastTime = 0.0;
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
@@ -55,9 +58,10 @@ void ExampleApp::onButtonDown(const VRButtonEvent &event) {
 	//std::cout << "ButtonDown: " << event.getName() << std::endl;
 	string name = event.getName();
 
-	 if (name == "MouseBtnLeft_Down") {
-		 mouseDown = true;
-	}
+	// if (name == "MouseBtnLeft_Down") {
+	//	 mouseDown = true;
+	//}
+	_turntable->onButtonDown(event);
 
 }
 
@@ -67,9 +71,10 @@ void ExampleApp::onButtonUp(const VRButtonEvent &event) {
 
 	//std::cout << "ButtonUp: " << event.getName() << std::endl;
 
-	if (event.getName() == "MouseBtnLeft_Up") {
+	/*if (event.getName() == "MouseBtnLeft_Up") {
 		mouseDown = false;
-	}
+	}*/
+	_turntable->onButtonUp(event);
 }
 
 void ExampleApp::onCursorMove(const VRCursorEvent &event) {
@@ -78,20 +83,21 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 	
 	//std::cout << "MouseMove: "<< event.getName() << " " << event.getPos()[0] << " " << event.getPos()[1] << std::endl;
 
-	if (mouseDown) {
-		vec2 dxy = vec2(event.getPos()[0], event.getPos()[1]) - lastMousePos;
-		// TODO: Update the "rotation" matrix based on how the user has dragged the mouse
-		// Note: the mouse movement since the last frame is stored in dxy.
+	//if (mouseDown) {
+	//	vec2 dxy = vec2(event.getPos()[0], event.getPos()[1]) - lastMousePos;
+	//	// TODO: Update the "rotation" matrix based on how the user has dragged the mouse
+	//	// Note: the mouse movement since the last frame is stored in dxy.
 
 
-		mat4 rotationX = toMat4(angleAxis(radians(dxy.x), vec3(0, 1, 0)));
-		mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 0)));
+	//	mat4 rotationX = toMat4(angleAxis(radians(dxy.x), vec3(0, 1, 0)));
+	//	mat4 rotationY = toMat4(angleAxis(radians(dxy.y), vec3(1, 0, 0)));
 
-		rotation =	rotationX * rotationY * rotation;
-	}
+	//	rotation =	rotationX * rotationY * rotation;
+	//}
 
 
-	lastMousePos = vec2(event.getPos()[0], event.getPos()[1]);
+	//lastMousePos = vec2(event.getPos()[0], event.getPos()[1]);
+	_turntable->onCursorMove(event);
 }
 
 void ExampleApp::onTrackerMove(const VRTrackerEvent &event) {
@@ -139,7 +145,8 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
-		setupGeometry(sphere_mesh);
+		//setupGeometry(sphere_mesh);
+		_modelMesh.reset(new Model("bunny.obj", 1.5, vec4(1.0)));
     }
 }
 
@@ -151,8 +158,9 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// Setup the view matrix to set where the camera is located in the scene
-    glm::vec3 eye_world = glm::vec3(0, 1.5, 1.5+maxHairLength);
-    glm::mat4 view = glm::lookAt(eye_world, glm::vec3(0,0,0), glm::vec3(0,1,0));
+    //glm::vec3 eye_world = glm::vec3(0, 1.5, 1.5+maxHairLength);
+	vec3 eyePosition = vec3(_turntable->getPos().x, _turntable->getPos().y, _turntable->getPos().z + maxHairLength);
+	glm::mat4 view = _turntable->frame();
 
 	// Setup the projection matrix so that things are rendered in perspective
 	GLfloat windowHeight = renderState.index().getValue("FramebufferHeight");
@@ -172,14 +180,15 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("MaxHairLength", maxHairLength);
 
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
-	_shader.setUniform("eye_world", eye_world);
+	//_shader.setUniform("eye_world", eye_world);
+	_shader.setUniform("eye_world", eyePosition);
     
 	
 	//to update2 shader
 	int asd = 1;
 
-
-	furLengthLoop();
+	_modelMesh->draw(_shader);
+	//furLengthLoop();
 }
 
 

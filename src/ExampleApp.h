@@ -7,6 +7,7 @@ using namespace MinVR;
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
+#include "TurntableManipulator.h"
 
 #ifdef _WIN32
 #include "GL/glew.h"
@@ -30,7 +31,7 @@ using namespace MinVR;
 #endif
 
 #include <BasicGraphics.h>
-
+using namespace basicgraphics;
 
 class ExampleApp : public VRApp {
 public:
@@ -68,7 +69,9 @@ private:
     virtual void reloadShaders();
     basicgraphics::GLSLProgram _shader;
 
+    std::unique_ptr<Model> _modelMesh; // for the bunny
     std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
+    std::shared_ptr<TurntableManipulator> _turntable;
 
     glm::mat4 rotation;
 
