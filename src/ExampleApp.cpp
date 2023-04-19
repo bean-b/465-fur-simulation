@@ -145,8 +145,8 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
-		//setupGeometry(sphere_mesh);
-		_modelMesh.reset(new Model("bunny.obj", 1.5, vec4(1.0)));
+		setupGeometry(sphere_mesh);
+		//_modelMesh.reset(new Model("bunny.obj", 1.5, vec4(1.0)));
     }
 }
 
@@ -177,6 +177,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("projection_mat", projection);
 	_shader.setUniform("model_mat", model);
 
+
 	_shader.setUniform("MaxHairLength", maxHairLength);
 
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
@@ -187,8 +188,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	//to update2 shader
 	int asd = 1;
 
-	_modelMesh->draw(_shader);
-	//furLengthLoop();
+	//_modelMesh->draw(_shader);
+	furLengthLoop();
 }
 
 

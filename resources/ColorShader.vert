@@ -25,7 +25,10 @@ void main(void)
 {
 	
 	interpSurfNormal = mat3(transpose(inverse(model_mat)))*vertex_normal;
-	interpSurfPosition = model_mat * vec4(vertex_position, 1.0) + vec4(normalize(interpSurfNormal) * MaxHairLength *CurrentLayer, 1);
+	vec4 pos = vec4(vertex_position, 1.0) + vec4(normalize(interpSurfNormal) * MaxHairLength *CurrentLayer, 1);
+	interpSurfPosition = model_mat * pos;
+	vec3 grav = vec3(0, -0.5f, 0.);
+	interpSurfPosition.xyz += grav*pow(CurrentLayer, 3);
 	texture_coordinates = vertex_texcoord;
 	gl_Position = projection_mat * view_mat * interpSurfPosition;
 
