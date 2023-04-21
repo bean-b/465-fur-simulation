@@ -100,13 +100,6 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 	_turntable->onCursorMove(event);
 }
 
-	void ExampleApp::onTrackerMove(const VRTrackerEvent &event) {
-		// This routine is called for all Tracker_Move events.  Check event->getName()
-		// to see exactly which tracker has moved, and then access the tracker's new
-		// 4x4 transformation matrix with event->getTransform().
-
-		// We will use trackers when we do a virtual reality assignment. For now, you can ignore this input type.
-	}
 
 void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
     // This routine is called once per graphics context at the start of the
@@ -145,7 +138,10 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
+
+		//used for the sphere
 		setupGeometry(sphere_mesh);
+		//used for the bunny
 		//_modelMesh.reset(new Model("bunny.obj", 1.5, vec4(1.0)));
     }
 }
@@ -181,14 +177,15 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("MaxHairLength", maxHairLength);
 
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
+	
+	//used for without the turn table
 	//_shader.setUniform("eye_world", eye_world);
 	_shader.setUniform("eye_world", eyePosition);
     
-	
-	//to update2 shader
-	int asd = 1;
-
+	//used for bunny
 	//_modelMesh->draw(_shader);
+	
+	//used for sphere
 	furLengthLoop();
 }
 
@@ -200,9 +197,6 @@ void ExampleApp::reloadShaders()
 	_shader.compileShader("ColorShader.vert", GLSLShader::VERTEX);
 	_shader.compileShader("ColorShader.frag", GLSLShader::FRAGMENT);
 
-	// Shaders that work
-	//_shader.compileShader("texture.vert", GLSLShader::VERTEX);
-	//_shader.compileShader("texture.frag", GLSLShader::FRAGMENT);
 	_shader.link();
 	_shader.use();
 }
@@ -236,7 +230,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 			vert.position = getPosition(currStackAngle, currSectorAngle);
 			vert.normal = vert.position / radius;
 
-
+			//thanks to 
 			//https://math.stackexchange.com/questions/1006177/compensating-for-distortion-when-projecting-a-2d-texture-onto-a-sphere
 
 			double lat = abs(asin(vert.position.z));
@@ -248,7 +242,6 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 			vert.texCoord0 = glm::vec2(u,v);
 
-			//vert.texCoord0 = glm::vec2(-(float)j / (float)SLICES + 0.5, -(float)i / (float)STACKS);
 			cpuVertexArray.push_back(vert);
 		}
 	}
@@ -289,11 +282,9 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	int totalPixels = width * height;
 
 	unsigned char colors[1000000];
-	//unsigned char furHeight[10000];
 
 	for (int i = 0; i < 1000000; i+=4) {
 		fillByteInByteArray(colors, i, 0, 0, 0, 0);
-		//fillByteInByteArray(furHeight, i, 0, 0, 0, 0);
 	}
 
 	////compute the number of opaque pixels = nr of hair strands
@@ -326,18 +317,16 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	}
 
 
-	////set the pixels on the texture.
-
-	int basd = 1223;
-
 	//coulumn major order
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
+	
 	// Added Jonas' texture path
 	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
-	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -356,16 +345,12 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 void ExampleApp::furLengthLoop() {
 	int nrLayers = 400;
 	for (int i = 0; i < nrLayers; i++) {
-	
 		_shader.setUniform("CurrentLayer", ((float)i) / ((float)nrLayers));
 		sphere_mesh->draw(_shader);
-
-		
 	}
 }
 
 void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-	
 	*(bytes + index) = r;
 	*(bytes + 1 + index) = g;
 	*(bytes + 2 + index) = b;
@@ -382,9 +367,6 @@ bool ExampleApp::checkNeighbors(unsigned char* bytes, int x, int y, int width) {
 			|| *(bytes + 3 * mod + ((x - 1) * width + (y + 1)) * 4 * mod) > (unsigned char) 0
 			|| *(bytes + 3 * mod + ((x)*width + (y + 1)) * 4 * mod) > (unsigned char) 0
 			|| *(bytes + 3 * mod + ((x + 1) * width + (y + 1)) * 4 * mod) > (unsigned char) 0) {
-
-
-
 			return false;
 		}
 	return true; 
