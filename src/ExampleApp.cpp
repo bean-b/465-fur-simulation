@@ -28,7 +28,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	rotation = mat4(1.0);
 	mouseDown = false;
 	maxHairLength = 0.5f;
-	furCoverage = 0.6f;
+	furCoverage = 4.0f;
 }
 
 ExampleApp::~ExampleApp()
@@ -100,13 +100,13 @@ void ExampleApp::onCursorMove(const VRCursorEvent &event) {
 	_turntable->onCursorMove(event);
 }
 
-void ExampleApp::onTrackerMove(const VRTrackerEvent &event) {
-    // This routine is called for all Tracker_Move events.  Check event->getName()
-    // to see exactly which tracker has moved, and then access the tracker's new
-    // 4x4 transformation matrix with event->getTransform().
+	void ExampleApp::onTrackerMove(const VRTrackerEvent &event) {
+		// This routine is called for all Tracker_Move events.  Check event->getName()
+		// to see exactly which tracker has moved, and then access the tracker's new
+		// 4x4 transformation matrix with event->getTransform().
 
-	// We will use trackers when we do a virtual reality assignment. For now, you can ignore this input type.
-}
+		// We will use trackers when we do a virtual reality assignment. For now, you can ignore this input type.
+	}
 
 void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
     // This routine is called once per graphics context at the start of the
@@ -319,7 +319,6 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 		if (checkNeighbors(colors, x, y, width)) {
 			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, (max_layer_n * 255));
-			
 		}
 
 
@@ -338,7 +337,7 @@ void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
-	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -375,18 +374,19 @@ void ExampleApp::fillByteInByteArray(unsigned char* bytes, int index, unsigned c
 
 bool ExampleApp::checkNeighbors(unsigned char* bytes, int x, int y, int width) {
 	unsigned char mod = 1;
-		if (   *(bytes + 3 * mod + ((x - 1) * width + (y - 1)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x)*width + (y - 1)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x + 1) * width + (y-1)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x-1)*width + (y)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x+1)*width + (y)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x - 1) * width + (y + 1)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x)*width + (y + 1)) * 4 * mod) == (unsigned char) 255
-			|| *(bytes + 3 * mod + ((x + 1) * width + (y + 1)) * 4 * mod) == (unsigned char) 255) {
+		if (   *(bytes + 3 * mod + ((x - 1) * width + (y - 1)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x)*width + (y - 1)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x + 1) * width + (y-1)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x-1)*width + (y)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x+1)*width + (y)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x - 1) * width + (y + 1)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x)*width + (y + 1)) * 4 * mod) > (unsigned char) 0
+			|| *(bytes + 3 * mod + ((x + 1) * width + (y + 1)) * 4 * mod) > (unsigned char) 0) {
+
+
 
 			return false;
 		}
-
 	return true; 
 
 }
