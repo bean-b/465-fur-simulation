@@ -47,7 +47,6 @@ public:
     virtual void onButtonDown(const VRButtonEvent &state);
     virtual void onButtonUp(const VRButtonEvent &state);
 	virtual void onCursorMove(const VRCursorEvent &state);
-    virtual void onTrackerMove(const VRTrackerEvent &state);
     
     
     /** RENDERING CALLBACKS **/
