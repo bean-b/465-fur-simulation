@@ -140,9 +140,12 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 
 
 		//used for the sphere
-		setupGeometry(sphere_mesh);
+		//setupGeometry(sphere_mesh);
 		//used for the bunny
-		//_modelMesh.reset(new Model("bunny.obj", 1.5, vec4(1.0)));
+		_modelMesh.reset(new Model("bunny.obj", 1.5));
+		_shader.use();
+		pushTextureOnly();
+		int bad = 123;
     }
 }
 
@@ -155,7 +158,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 
 	// Setup the view matrix to set where the camera is located in the scene
     //glm::vec3 eye_world = glm::vec3(0, 1.5, 1.5+maxHairLength);
-	vec3 eyePosition = vec3(_turntable->getPos().x, _turntable->getPos().y, _turntable->getPos().z + maxHairLength);
+	vec3 eyePosition = vec3(_turntable->getPos().x, _turntable->getPos().y, _turntable->getPos().z + 3 + maxHairLength);
 	glm::mat4 view = _turntable->frame();
 
 	// Setup the projection matrix so that things are rendered in perspective
@@ -183,10 +186,10 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("eye_world", eyePosition);
     
 	//used for bunny
-	//_modelMesh->draw(_shader);
-	
+	_modelMesh->draw(_shader);
+
 	//used for sphere
-	furLengthLoop();
+	//furLengthLoop();
 }
 
 
@@ -196,12 +199,67 @@ void ExampleApp::reloadShaders()
 {
 	_shader.compileShader("ColorShader.vert", GLSLShader::VERTEX);
 	_shader.compileShader("ColorShader.frag", GLSLShader::FRAGMENT);
-
+	/*_shader.compileShader("Texture.vert", GLSLShader::VERTEX);
+	_shader.compileShader("Texture.frag", GLSLShader::FRAGMENT);*/
 	_shader.link();
 	_shader.use();
 }
 
+void ExampleApp::pushTextureOnly() {
+	int width = 500;
+	int height = 500;
+	int totalPixels = width * height;
 
+	unsigned char colors[1000000];
+
+	for (int i = 0; i < 1000000; i += 4) {
+		fillByteInByteArray(colors, i, 255, 0, 0, 255);
+	}
+
+	////compute the number of opaque pixels = nr of hair strands
+	int nrStrands = (int)(furCoverage * totalPixels);
+
+	int nrOfLayers = 400;
+
+	int strandsPerLayer = nrStrands / nrOfLayers;
+
+
+	////fill texture with opaque pixels
+	//for (int i = 0; i < nrStrands; i++)
+	//{
+	//	int x, y;
+
+	//	x = rand() % height;
+	//	y = rand() % width;
+
+	//	//compute max layer
+	//	int max_layer = i / strandsPerLayer;
+	//	//normalize into [0..1] range
+	//	float max_layer_n = (float)max_layer / (float)nrOfLayers;
+
+	//	if (checkNeighbors(colors, x, y, width)) {
+	//		fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, (max_layer_n * 255));
+	//	}
+
+
+
+	//}
+
+
+	//coulumn major order
+	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
+
+	// Added Jonas' texture path
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	// Aurum's tex path
+	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//beans tex path
+	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+
+	tex->bind(1);
+	_shader.setUniform("furTex", 1);
+
+}
 void ExampleApp::setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh) {
 
 	const int STACKS = 20;

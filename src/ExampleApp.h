@@ -72,6 +72,7 @@ private:
     std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
     std::shared_ptr<TurntableManipulator> _turntable;
 
+
     glm::mat4 rotation;
 
 
@@ -86,7 +87,7 @@ private:
    
     void fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void furLengthLoop();
-
+    void pushTextureOnly();
 
     bool checkNeighbors(unsigned char* bytes, int x, int y, int width);
     //basicgraphics::Texture FillFurTexture(basicgraphics::Texture furTexture, float density);
