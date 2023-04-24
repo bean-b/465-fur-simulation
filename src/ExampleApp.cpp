@@ -172,7 +172,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("view_mat", view);
 	_shader.setUniform("projection_mat", projection);
 	_shader.setUniform("model_mat", model);
-
+	_shader.setUniform("baseColor", vec3(0.124, 0.104, 0.07));
 
 	_shader.setUniform("MaxHairLength", maxHairLength);
 
