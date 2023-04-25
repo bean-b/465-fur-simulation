@@ -58,6 +58,8 @@ private:
 	double _lastTime;
 	double _curFrameTime;
 
+    string modelName;
+    int numLayers;
     
     float furCoverage;
     float maxHairLength;

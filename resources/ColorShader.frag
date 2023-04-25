@@ -15,8 +15,8 @@ void main()
 {
     
     
-       fragColor = texture(furTex, texture_coordinates);
-      //fragColor = vec4(texture_coordinates, 0, 1);
+    fragColor = texture(furTex, texture_coordinates);
+    
     float furVisibility = 1;
 
     if(CurrentLayer > fragColor.a){
@@ -27,7 +27,7 @@ void main()
         fragColor.rgb = baseColor;
         fragColor.a = 1.0;
     }else{
-    fragColor.a = furVisibility;
+        fragColor.a = furVisibility;
    }
 
     float shadow = mix(0.6, 1, CurrentLayer);

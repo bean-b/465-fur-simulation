@@ -29,6 +29,9 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 
 	maxHairLength = 0.5f;
 	furCoverage = 4.0f;
+
+	modelName = "bunny.obj";
+	numLayers = 400;
 }
 
 ExampleApp::~ExampleApp()
@@ -95,7 +98,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
-		_modelMesh.reset(new Model("bunny.obj", 1.5));
+		_modelMesh.reset(new Model(modelName, 1.5));
 		_shader.use();
 		pushFurTex();
 		
@@ -138,6 +141,9 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	//_shader.setUniform("eye_world", eye_world);
 	_shader.setUniform("eye_world", eyePosition);
 	
+
+	//_modelMesh->draw(_shader);
+
 	furLengthLoop();
 }
 
@@ -169,7 +175,7 @@ void ExampleApp::pushFurTex() {
 	////compute the number of opaque pixels = nr of hair strands
 	int nrStrands = (int)(furCoverage * totalPixels);
 
-	int nrOfLayers = 400;
+	int nrOfLayers = numLayers;
 
 	int strandsPerLayer = nrStrands / nrOfLayers;
 
@@ -189,10 +195,7 @@ void ExampleApp::pushFurTex() {
 
 		if (checkNeighbors(colors, x, y, width)) {
 			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, (max_layer_n * 255));
-		}
-
-
-		
+		}		
 	}
 
 
@@ -218,9 +221,8 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 }
 
 void ExampleApp::furLengthLoop() {
-	int nrLayers = 300;
-	for (int i = 0; i < nrLayers; i++) {
-		_shader.setUniform("CurrentLayer", ((float)i) / ((float)nrLayers));
+	for (int i = 0; i < numLayers; i++) {
+		_shader.setUniform("CurrentLayer", ((float)i) / ((float)numLayers));
 		_modelMesh->draw(_shader);
 	}
 }
