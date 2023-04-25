@@ -62,24 +62,23 @@ private:
     float furCoverage;
     float maxHairLength;
 
-    bool mouseDown; // Signifies whether the left mouse button is currently held down.
     glm::vec2 lastMousePos;
     
     virtual void reloadShaders();
     basicgraphics::GLSLProgram _shader;
 
     std::unique_ptr<Model> _modelMesh; // for the bunny
-    std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
     std::shared_ptr<TurntableManipulator> _turntable;
 
+    std::shared_ptr<Texture> tex;
+
+
+    bool drawingModel;
 
     glm::mat4 rotation;
 
 
-	struct FONScontext* fs;
-
-    // Calculate and set up the buffers to render to screen
-    void setupGeometry(std::shared_ptr<basicgraphics::Mesh>& _mesh);
+    void pushFurTex();
 
     // Given latitude and longitude, calculate 3D position
     glm::vec3 getPosition(double latitude, double longitude);
@@ -87,7 +86,6 @@ private:
    
     void fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void furLengthLoop();
-    void pushTextureOnly();
 
     bool checkNeighbors(unsigned char* bytes, int x, int y, int width);
     //basicgraphics::Texture FillFurTexture(basicgraphics::Texture furTexture, float density);

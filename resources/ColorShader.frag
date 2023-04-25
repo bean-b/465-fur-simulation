@@ -15,22 +15,22 @@ void main()
 {
     
     
-    fragColor = texture(furTex, texture_coordinates);
+       fragColor = texture(furTex, texture_coordinates);
+      //fragColor = vec4(texture_coordinates, 0, 1);
+    float furVisibility = 1;
 
-//    float furVisibility = 1;
-//
-//    if(CurrentLayer > fragColor.a){
-//        furVisibility = 0;
-//    }
-//
-//    if(CurrentLayer == 0){
-//        fragColor.rgb = baseColor;
-//        fragColor.a = 1.0;
-//    }else{
-//    fragColor.a = furVisibility;
-//   }
-//
-//    float shadow = mix(0.6, 1, CurrentLayer);
-//    fragColor *= shadow;
+    if(CurrentLayer > fragColor.a){
+        furVisibility = 0;
+    }
+
+    if(CurrentLayer == 0){
+        fragColor.rgb = baseColor;
+        fragColor.a = 1.0;
+    }else{
+    fragColor.a = furVisibility;
+   }
+
+    float shadow = mix(0.6, 1, CurrentLayer);
+    fragColor *= shadow;
 
 }
