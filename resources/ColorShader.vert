@@ -33,13 +33,13 @@ void main(void)
 	vec4 pos = vec4(vertex_position, 1.0) + vec4(normalize(interpSurfNormal) * MaxHairLength *CurrentLayer, 1);
 	interpSurfPosition = model_mat * pos;
 	
-//	vec3 grav = vec3(0, gravPower, 0.);
-//	interpSurfPosition.xyz += grav*pow(CurrentLayer, 3);
+	vec3 grav = vec3(0, gravPower, 0.);
+	interpSurfPosition.xyz += grav*pow(CurrentLayer, 3);
 	
 	texture_coordinates = vertex_texcoord;
 	gl_Position = projection_mat * view_mat * interpSurfPosition;
 
-
+	
 	position_world = vec3 (model_mat * vec4 (vertex_position, 1.0));
 	normal_world = normalize(normal_mat * vertex_normal);
 

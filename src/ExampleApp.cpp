@@ -38,7 +38,6 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	
 	
 	
-	
 	maxHairLength = 0.1f;
 	furCoverage = 4.0f;
 	gravPower = -0.12f;
@@ -111,7 +110,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		glEnable(GL_MULTISAMPLE);
 
 		// This sets the background color that is used to clear the canvas
-		glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
+		glClearColor(0.45f, 0.45f, 0.45f, 1.0f);
 
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
