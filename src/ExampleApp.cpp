@@ -36,14 +36,12 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	rotation = mat4(1.0);
 
 	
-	
+	int asd = 12;
 	
 	maxHairLength = 0.1f;
 	furCoverage = 4.0f;
 	gravPower = -0.12f;
 	shadowIntensity = 0.6f;
-
-
 
 
 
@@ -117,7 +115,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 
 		_shader.use();
 
-		_shader.setUniform("baseColor", vec3(0.124, 0.104, 0.07));
+
 		_shader.setUniform("MaxHairLength", maxHairLength);
 		_shader.setUniform("lightPos", vec3(1, 1, 1));
 		_shader.setUniform("gravPower", gravPower);
@@ -244,6 +242,13 @@ void ExampleApp::pushFurTex() {
 	//beans tex path
 	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 
+
+
+
+	tex2 = Texture::create2DTextureFromFile("skinTex.jpg");
+	
+	tex2->bind(2);
+	_shader.setUniform("skinTex", 2);
 
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
@@ -373,15 +378,24 @@ void ExampleApp::setUpSphere() {
 	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
 
 	// Added Jonas' texture path
-	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\furTex.png");
 	// Aurum's tex path
-	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\furTex.png");
 	//beans tex path
-	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\furTex.png");
+
+	tex2 = Texture::create2DTextureFromFile("skinTex.jpg");
+	
+	tex2->bind(2);
+	_shader.setUniform("skinTex", 2);
 
 	textures.push_back(tex);
 	tex->bind(1);
 	_shader.setUniform("furTex", 1);
+
+
+
+
 
 	sphere_mesh.reset(new Mesh(textures, GL_TRIANGLES, GL_STATIC_DRAW,
 		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,

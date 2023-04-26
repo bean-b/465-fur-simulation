@@ -78,6 +78,7 @@ private:
     std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
 
     std::shared_ptr<Texture> tex;
+    std::shared_ptr<Texture> tex2;
 
 
     glm::mat4 rotation;

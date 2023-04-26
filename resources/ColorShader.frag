@@ -4,6 +4,7 @@
 out vec4 fragColor;
 
 uniform sampler2D furTex;
+uniform sampler2D skinTex;
 in vec4 interpSurfPosition;
 uniform float CurrentLayer;
 
@@ -12,7 +13,6 @@ uniform vec3 eye_world;
 in vec3 position_world;
 in vec3 normal_world;
 
-uniform vec3 baseColor;
 
 
 uniform float shadowIntensity = 0.6f;
@@ -33,7 +33,7 @@ void main()
     }
 
     if(CurrentLayer == 0){
-        fragColor.rgb = baseColor;
+        fragColor = texture(skinTex, texture_coordinates) * 0.3f;
         fragColor.a = 1.0;
     }else{
         fragColor.a = furVisibility;
