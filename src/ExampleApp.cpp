@@ -22,7 +22,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 {
 	_turntable.reset(new TurntableManipulator(3, 0.3, 0.5));
 
-	drawingModel = false;
+	drawingModel = true;
 
 	if (drawingModel) {
 		_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
@@ -41,7 +41,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	
 	maxHairLength = 0.1f;
 	furCoverage = 4.0f;
-	gravPower = -0.08f;
+	gravPower = -0.12f;
 	shadowIntensity = 0.6f;
 
 
@@ -111,7 +111,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		glEnable(GL_MULTISAMPLE);
 
 		// This sets the background color that is used to clear the canvas
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
 
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
