@@ -49,14 +49,31 @@ void main()
 
 
 
+    float aStr = 0.55f;
+    float dStr = 1.0f;
+    float sStr = 0.05f;
+
+
     // Ambient
-    vec3 ambient = 0.2 * fragColor.rgb;
+    vec3 ambient = aStr * fragColor.rgb;
     // Diffuse
     vec3 lightDir = normalize(lightPos - position_world);
     vec3 normal = normalize(normal_world);
     float diff = max(dot(lightDir, normal), 0.0);
+
+
     vec3 diffuse = diff * fragColor.rgb;
 
-    fragColor = vec4(ambient + diffuse, fragColor.a);
+    diffuse = diffuse * dStr;
+
+    float spec = 0.0;
+    vec3 viewDir = normalize(eye_world - position_world);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+
+    vec3 specular = vec3(sStr) * spec;
+
+    fragColor = vec4(ambient + diffuse + specular, fragColor.a);
 
 }

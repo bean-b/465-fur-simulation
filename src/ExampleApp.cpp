@@ -22,7 +22,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 {
 	_turntable.reset(new TurntableManipulator(3, 0.3, 0.5));
 
-	drawingModel = true;
+	drawingModel = false;
 
 	if (drawingModel) {
 		_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
