@@ -21,7 +21,15 @@ using namespace glm;
 ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 {
 	_turntable.reset(new TurntableManipulator(3, 0.3, 0.5));
-	_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
+
+	drawingModel = true;
+
+	if (!drawingModel) {
+		_turntable->setCenterPosition(vec3(0, 0, 0));
+	}
+	else {
+		_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
+	}
 
 	_lastTime = 0.0;
     _curFrameTime = 0.0;
@@ -98,9 +106,15 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
-		_modelMesh.reset(new Model(modelName, 1.5));
-		_shader.use();
-		pushFurTex();
+
+		if (drawingModel) {
+			_modelMesh.reset(new Model(modelName, 1.5));
+			_shader.use();
+			pushFurTex();
+		}
+		else {
+			setUpSphere();
+		}
 		
     }
 }
@@ -144,7 +158,13 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 
 	//_modelMesh->draw(_shader);
 
-	furLengthLoop();
+
+	if (drawingModel) {
+		furLengthLoop();
+	}
+	else {
+		furLengthLoopSphere();
+	}
 }
 
 
@@ -158,6 +178,8 @@ void ExampleApp::reloadShaders()
 	_shader.link();
 	_shader.use();
 }
+
+
 
 void ExampleApp::pushFurTex() {
 	//an array to hold our pixels
@@ -207,7 +229,7 @@ void ExampleApp::pushFurTex() {
 	// Aurum's tex path
 	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
 	//beans tex path
-	tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
 
 
 	tex->bind(1);
@@ -220,10 +242,150 @@ glm::vec3 ExampleApp::getPosition(double latitude, double longitude) {
 	return vec3(cos(latitude) * cos(longitude), -sin(latitude), cos(latitude) * sin(longitude));
 }
 
+void ExampleApp::setUpSphere() {
+	const int STACKS = 20;
+	const int SLICES = 40;
+
+	std::vector<Mesh::Vertex> cpuVertexArray;
+	std::vector<int> cpuIndexArray;
+	std::vector<std::shared_ptr<Texture>> textures;
+
+	float radius = 1.0;
+	float pi = glm::pi<float>();
+
+
+	float singleSliceAngle = 2 * pi / SLICES;
+	float singleStackAngle = pi / STACKS;
+	float currSectorAngle, currStackAngle;
+	int count = 0;
+
+	for (int i = 0; i <= STACKS; i++) {
+		currStackAngle = pi / 2 - i * singleStackAngle;
+
+
+		for (int j = 0; j <= SLICES; j++) {
+			currSectorAngle = j * singleSliceAngle;
+			Mesh::Vertex vert;
+			vert.position = getPosition(currStackAngle, currSectorAngle);
+			vert.normal = vert.position / radius;
+
+			//thanks to 
+			//https://math.stackexchange.com/questions/1006177/compensating-for-distortion-when-projecting-a-2d-texture-onto-a-sphere
+
+			double lat = abs(asin(vert.position.z));
+			double dist = 1 - lat / pi * 2;
+			double xProj = cos(lat);
+			float ratio = (xProj == 0) ? 1 : (float)(dist / xProj);
+			float u = (vert.position.x * ratio + 1) / 2;
+			float v = (vert.position.y * ratio + 1) / 2;
+
+			vert.texCoord0 = glm::vec2(u, v);
+
+			cpuVertexArray.push_back(vert);
+		}
+	}
+
+	int k1, k2;
+	for (int i = 0; i < STACKS; i++) {
+		// Coordinates for each corner of a sector in a sphere
+		k1 = i * (SLICES + 1);
+		k2 = k1 + SLICES + 1;
+
+		for (int j = 0; j < SLICES; j++, k1++, k2++) {
+
+			// If not the first sector
+			if (i != 0) {
+				cpuIndexArray.push_back(k1);
+				cpuIndexArray.push_back(k2);
+				cpuIndexArray.push_back(k1 + 1);
+			}
+
+			// If not the last sector
+			if (i != (STACKS)) {
+				cpuIndexArray.push_back(k1 + 1);
+				cpuIndexArray.push_back(k2);
+				cpuIndexArray.push_back(k2 + 1);
+			}
+
+		}
+	}
+
+	const int numVertices = cpuVertexArray.size();
+	const int cpuVertexByteSize = sizeof(Mesh::Vertex) * numVertices;
+	const int cpuIndexByteSize = sizeof(int) * cpuIndexArray.size();
+
+	//an array to hold our pixels
+
+	int width = 500;
+	int height = 500;
+	int totalPixels = width * height;
+
+	unsigned char colors[1000000];
+
+	for (int i = 0; i < 1000000; i += 4) {
+		fillByteInByteArray(colors, i, 0, 0, 0, 0);
+	}
+
+	////compute the number of opaque pixels = nr of hair strands
+	int nrStrands = (int)(furCoverage * totalPixels);
+
+	int nrOfLayers = 400;
+
+	int strandsPerLayer = nrStrands / nrOfLayers;
+
+
+	////fill texture with opaque pixels
+	for (int i = 0; i < nrStrands; i++)
+	{
+		int x, y;
+
+		x = rand() % height;
+		y = rand() % width;
+
+		//compute max layer
+		int max_layer = i / strandsPerLayer;
+		//normalize into [0..1] range
+		float max_layer_n = (float)max_layer / (float)nrOfLayers;
+
+		if (checkNeighbors(colors, x, y, width)) {
+			fillByteInByteArray(colors, (x * width + y) * 4, 95, 80, 54, (max_layer_n * 255));
+		}
+
+
+
+	}
+
+
+	//coulumn major order
+	std::shared_ptr<Texture> tex = Texture::createFromMemory("testName", colors, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA8, GL_TEXTURE_2D, width, height, 1);
+
+	// Added Jonas' texture path
+	//tex->save2D("D:\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	// Aurum's tex path
+	//tex->save2D("C:\\Users\\mykun\\Documents\\comp465\\code\\465-fur-simulation\\resources\\grey2.png");
+	//beans tex path
+	//tex->save2D("D:\\Code\\465\\465-fur-simulation\\resources\\grey2.png");
+
+	textures.push_back(tex);
+	tex->bind(1);
+	_shader.setUniform("furTex", 1);
+
+	sphere_mesh.reset(new Mesh(textures, GL_TRIANGLES, GL_STATIC_DRAW,
+		cpuVertexByteSize, cpuIndexByteSize, 0, cpuVertexArray,
+		cpuIndexArray.size(), cpuIndexByteSize, &cpuIndexArray[0]));
+}
+
 void ExampleApp::furLengthLoop() {
 	for (int i = 0; i < numLayers; i++) {
 		_shader.setUniform("CurrentLayer", ((float)i) / ((float)numLayers));
 		_modelMesh->draw(_shader);
+	}
+}
+
+void ExampleApp::furLengthLoopSphere() {
+	for (int i = 0; i < numLayers; i++) {
+		_shader.setUniform("CurrentLayer", ((float)i) / ((float)numLayers));
+		sphere_mesh->draw(_shader);
 	}
 }
 

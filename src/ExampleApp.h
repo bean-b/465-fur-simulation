@@ -60,6 +60,8 @@ private:
 
     string modelName;
     int numLayers;
+
+    bool drawingModel;
     
     float furCoverage;
     float maxHairLength;
@@ -71,15 +73,14 @@ private:
 
     std::unique_ptr<Model> _modelMesh; // for the bunny
     std::shared_ptr<TurntableManipulator> _turntable;
+    std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
 
     std::shared_ptr<Texture> tex;
 
 
-    bool drawingModel;
-
     glm::mat4 rotation;
 
-
+    void setUpSphere();
     void pushFurTex();
 
     // Given latitude and longitude, calculate 3D position
@@ -88,6 +89,7 @@ private:
    
     void fillByteInByteArray(unsigned char* bytes, int index, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void furLengthLoop();
+    void furLengthLoopSphere();
 
     bool checkNeighbors(unsigned char* bytes, int x, int y, int width);
     //basicgraphics::Texture FillFurTexture(basicgraphics::Texture furTexture, float density);
