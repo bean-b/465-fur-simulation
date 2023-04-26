@@ -24,19 +24,19 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 
 	drawingModel = true;
 
-	if (!drawingModel) {
-		_turntable->setCenterPosition(vec3(0, 0, 0));
+	if (drawingModel) {
+		_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
 	}
 	else {
-		_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
+		_turntable->setCenterPosition(vec3(0, 0, 0));
 	}
 
 	_lastTime = 0.0;
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 
-	maxHairLength = 0.5f;
-	furCoverage = 4.0f;
+	maxHairLength = 0.01f;
+	furCoverage = 1.0f;
 
 	modelName = "bunny.obj";
 	numLayers = 400;
@@ -108,7 +108,8 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 
 
 		if (drawingModel) {
-			_modelMesh.reset(new Model(modelName, 1.5));
+			vec4 mat = vec4(0, 0, 0, 0);
+			_modelMesh.reset(new Model(modelName, 1.5, mat));
 			_shader.use();
 			pushFurTex();
 		}
