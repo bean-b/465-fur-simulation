@@ -39,9 +39,9 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	
 	
 	
-	maxHairLength = 0.01f;
-	furCoverage = 0.5f;
-	gravPower = -0.5f;
+	maxHairLength = 0.1f;
+	furCoverage = 4.0f;
+	gravPower = -0.08f;
 	shadowIntensity = 0.6f;
 
 
@@ -116,11 +116,17 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 		// This load shaders from disk, we do it once when the program starts up.
 		reloadShaders();
 
+		_shader.use();
+
+		_shader.setUniform("baseColor", vec3(0.124, 0.104, 0.07));
+		_shader.setUniform("MaxHairLength", maxHairLength);
+		_shader.setUniform("lightPos", vec3(1, 1, 1));
+		_shader.setUniform("gravPower", gravPower);
+		_shader.setUniform("shadowIntensity", shadowIntensity);
 
 		if (drawingModel) {
 			vec4 mat = vec4(0, 0, 0, 0);
 			_modelMesh.reset(new Model(modelName, 1.5, mat));
-			_shader.use();
 			pushFurTex();
 		}
 		else {
@@ -156,12 +162,7 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 	_shader.setUniform("view_mat", view);
 	_shader.setUniform("projection_mat", projection);
 	_shader.setUniform("model_mat", model);
-	_shader.setUniform("baseColor", vec3(0.124, 0.104, 0.07));
 
-	_shader.setUniform("MaxHairLength", maxHairLength);
-
-	_shader.setUniform("gravPower", gravPower);
-	_shader.setUniform("shadowIntensity", shadowIntensity);
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	
 	//used for without the turn table

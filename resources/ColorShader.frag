@@ -7,11 +7,17 @@ uniform sampler2D furTex;
 in vec4 interpSurfPosition;
 uniform float CurrentLayer;
 
+uniform vec3 eye_world;
+
+in vec3 position_world;
+in vec3 normal_world;
 
 uniform vec3 baseColor;
 
 
 uniform float shadowIntensity = 0.6f;
+uniform vec3 lightPos; 
+
 
 in vec2 texture_coordinates;
 void main() 
@@ -35,5 +41,22 @@ void main()
 
     float shadow = mix(shadowIntensity, 1, CurrentLayer);
     fragColor *= shadow;
+
+    if(CurrentLayer == 0){
+        fragColor.a = 1.0;
+    }
+
+
+
+
+    // Ambient
+    vec3 ambient = 0.2 * fragColor.rgb;
+    // Diffuse
+    vec3 lightDir = normalize(lightPos - position_world);
+    vec3 normal = normalize(normal_world);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * fragColor.rgb;
+
+    fragColor = vec4(ambient + diffuse, fragColor.a);
 
 }
