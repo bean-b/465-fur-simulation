@@ -10,6 +10,9 @@ uniform float CurrentLayer;
 
 uniform vec3 baseColor;
 
+
+uniform float shadowIntensity = 0.6f;
+
 in vec2 texture_coordinates;
 void main() 
 {
@@ -30,7 +33,7 @@ void main()
         fragColor.a = furVisibility;
    }
 
-    float shadow = mix(0.6, 1, CurrentLayer);
+    float shadow = mix(shadowIntensity, 1, CurrentLayer);
     fragColor *= shadow;
 
 }

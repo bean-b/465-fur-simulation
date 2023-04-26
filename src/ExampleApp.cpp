@@ -35,8 +35,18 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 
+	
+	
+	
+	
 	maxHairLength = 0.01f;
-	furCoverage = 1.0f;
+	furCoverage = 0.5f;
+	gravPower = -0.5f;
+	shadowIntensity = 0.6f;
+
+
+
+
 
 	modelName = "bunny.obj";
 	numLayers = 400;
@@ -150,6 +160,8 @@ void ExampleApp::onRenderGraphicsScene(const VRGraphicsState &renderState) {
 
 	_shader.setUniform("MaxHairLength", maxHairLength);
 
+	_shader.setUniform("gravPower", gravPower);
+	_shader.setUniform("shadowIntensity", shadowIntensity);
 	_shader.setUniform("normal_mat", mat3(transpose(inverse(model))));
 	
 	//used for without the turn table

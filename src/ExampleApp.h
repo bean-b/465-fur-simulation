@@ -65,6 +65,8 @@ private:
     
     float furCoverage;
     float maxHairLength;
+    float gravPower;
+    float shadowIntensity;
 
     glm::vec2 lastMousePos;
     
