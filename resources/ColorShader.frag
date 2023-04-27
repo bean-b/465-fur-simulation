@@ -46,9 +46,10 @@ void main()
 
 
 
-    float aStr = 0.55f;
-    float dStr = 1.0f;
-    float sStr = 0.05f;
+
+    float aStr = 0.58f;
+    float dStr = 1.1f;
+    float sStr = 0.04f;
 
 
     // Ambient

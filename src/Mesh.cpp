@@ -86,10 +86,10 @@ namespace furSim {
 			for (int i = 0; i < _textures.size(); i++) {
 				if (!_textures[i]->isOpaque()) {
 					translucent = true;
-					glDisable(GL_DEPTH_TEST);
+					//glDisable(GL_DEPTH_TEST);
 					//Note: This isn't going to work properly because the surfaces are not sorted back to front. Transparent surfaces should be drawn after all the opaque geometry.
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+					//glEnable(GL_BLEND);
+					//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				}
 				_textures[i]->bind(i);
 				shader.setUniform("textureSampler", i);
@@ -102,8 +102,8 @@ namespace furSim {
 				translucent = true;
 				//glDisable(GL_DEPTH_TEST);
 				//Note: This isn't going to work properly because the surfaces are not sorted back to front. Transparent surfaces should be drawn after all the opaque geometry.
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				//glEnable(GL_BLEND);
+				//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			}
 		}
 
@@ -111,11 +111,11 @@ namespace furSim {
 		glDrawElements(_primitiveType, _numIndices, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		if (translucent) {
-			glBlendFunc(GL_ONE, GL_ZERO);
-			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
-		}
+		//if (translucent) {
+			//glBlendFunc(GL_ONE, GL_ZERO);
+			//glDisable(GL_BLEND);
+			//glEnable(GL_DEPTH_TEST);
+		//}
 
 		// Reset state
 		for (int i = 0; i < _textures.size(); i++)

@@ -35,12 +35,11 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 
-	int num = 1;
+	int asd = 1;
 
-
-	maxHairLength = 0.1f;
-	furCoverage = 4.0f;
-	gravPower = -0.12f;
+	maxHairLength = 0.08f;
+	furCoverage = 8.0f;
+	gravPower = -0.06f;
 	shadowIntensity = 0.6f;
 
 
@@ -98,8 +97,11 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 
 
         glEnable(GL_DEPTH_TEST);
+
 		glEnable(GL_BLEND);
-        glClearDepth(1.0f);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glClearDepth(1.0f);
         glDepthFunc(GL_LEQUAL);
 
 		glEnable(GL_CULL_FACE);
