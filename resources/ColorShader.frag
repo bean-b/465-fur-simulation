@@ -15,7 +15,7 @@ in vec3 normal_world;
 
 
 
-uniform float shadowIntensity = 0.6f;
+uniform float shadowIntensity;
 uniform vec3 lightPos; 
 
 

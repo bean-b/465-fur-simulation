@@ -25,7 +25,7 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
 	drawingModel = true;
 
 	if (drawingModel) {
-		_turntable->setCenterPosition(vec3(-0.3, 0.8, 0));
+		_turntable->setCenterPosition(vec3(-0.1, 0.5, 0));
 	}
 	else {
 		_turntable->setCenterPosition(vec3(0, 0, 0));
