@@ -31,7 +31,10 @@ using namespace MinVR;
 #endif
 
 #include <BasicGraphics.h>
+#include "Model.h";
 using namespace basicgraphics;
+
+
 
 class ExampleApp : public VRApp {
 public:
@@ -73,7 +76,7 @@ private:
     virtual void reloadShaders();
     basicgraphics::GLSLProgram _shader;
 
-    std::unique_ptr<Model> _modelMesh; // for the bunny
+    std::unique_ptr<furSim::Model> _modelMesh; // for the bunny
     std::shared_ptr<TurntableManipulator> _turntable;
     std::shared_ptr<basicgraphics::Mesh> sphere_mesh;
 

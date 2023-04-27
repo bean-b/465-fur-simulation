@@ -37,11 +37,15 @@ set(source_files
   src/main.cpp
   src/ExampleApp.cpp
   src/TurntableManipulator.cpp
+  src/Model.cpp
+  src/Mesh.cpp
 )
 
 set(header_files
   src/ExampleApp.h
   src/TurntableManipulator.h
+  src/Model.h
+  src/Mesh.h
 )
 
 set(extra_files

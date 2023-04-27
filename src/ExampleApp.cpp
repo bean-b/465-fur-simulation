@@ -35,9 +35,9 @@ ExampleApp::ExampleApp(int argc, char** argv) : VRApp(argc, argv)
     _curFrameTime = 0.0;
 	rotation = mat4(1.0);
 
-	
-	int asd = 12;
-	
+	int num = 1;
+
+
 	maxHairLength = 0.1f;
 	furCoverage = 4.0f;
 	gravPower = -0.12f;
@@ -123,7 +123,7 @@ void ExampleApp::onRenderGraphicsContext(const VRGraphicsState &renderState) {
 
 		if (drawingModel) {
 			vec4 mat = vec4(0, 0, 0, 0);
-			_modelMesh.reset(new Model(modelName, 1.5, mat));
+			_modelMesh.reset(new furSim::Model(modelName, 1.5, mat));
 			pushFurTex();
 		}
 		else {
@@ -406,6 +406,7 @@ void ExampleApp::furLengthLoop() {
 	for (int i = 0; i < numLayers; i++) {
 		_shader.setUniform("CurrentLayer", ((float)i) / ((float)numLayers));
 		_modelMesh->draw(_shader);
+		//glClear(GL_DEPTH_BUFFER_BIT);
 	}
 }
 

@@ -37,14 +37,11 @@ void main()
         fragColor.a = 1.0;
     }else{
         fragColor.a = furVisibility;
-   }
-
-    float shadow = mix(shadowIntensity, 1, CurrentLayer);
-    fragColor *= shadow;
-
-    if(CurrentLayer == 0){
-        fragColor.a = 1.0;
+        float shadow = mix(shadowIntensity, 1, CurrentLayer);
+        fragColor *= shadow;
     }
+
+
 
 
 
