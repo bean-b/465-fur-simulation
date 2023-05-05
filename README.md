@@ -1,5 +1,4 @@
-# 465-fur-simulation
-This is a final project for comp-465 Interactive Computer Graphics by Jonas Costa, Bean Baumstark and Aurum Tran. Below is a copy of our final write-up.
+# This is our final project for comp-465 Interactive Computer Graphics by Jonas Costa, Bean Baumstark and Aurum Tran. Below is a copy of our final write-up.
 ![Fur_Rendering_Paper-1](https://user-images.githubusercontent.com/84480476/236527403-50e5c472-6bf8-4722-bcf8-487961ccb928.png)
 ![Fur_Rendering_Paper-2](https://user-images.githubusercontent.com/84480476/236527405-792f7c58-17ff-4903-bccb-5a205364ca3d.png)
 ![Fur_Rendering_Paper-3](https://user-images.githubusercontent.com/84480476/236527408-71bf9007-33e5-4af0-b698-50375337ea99.png)
